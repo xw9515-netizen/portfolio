@@ -50,6 +50,23 @@ function stopFade() {
   }
 }
 
+function setMediaSession(mode: Mode, base: string, playing: boolean) {
+  if (!('mediaSession' in navigator)) return
+  if (playing) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title:  mode === 'light' ? 'Sandy Beach' : 'Astral Night',
+      artist: 'Ambient',
+      album:  'Xiang Wang — Portfolio',
+      artwork: [
+        { src: `${base}artwork-${mode}.svg`, sizes: '512x512', type: 'image/svg+xml' },
+      ],
+    })
+    navigator.mediaSession.playbackState = 'playing'
+  } else {
+    navigator.mediaSession.playbackState = 'paused'
+  }
+}
+
 function startSaving(mode: Mode) {
   stopSaving()
   saveTimer = setInterval(() => {
@@ -83,18 +100,22 @@ export function useAmbientNoise(theme: Mode) {
     oldAudio.pause()
 
     const next = getAudio(theme)
+    const base = import.meta.env.BASE_URL
     next.play().catch(() => {})
     startFade(next, theme)
     startSaving(theme)
+    setMediaSession(theme, base, true)
   }, [theme])
 
   const play = useCallback(() => {
     const audio = getAudio(theme)
     const saved = localStorage.getItem(STORAGE_KEYS[theme])
     if (saved) audio.currentTime = parseFloat(saved)
+    const base = import.meta.env.BASE_URL
     audio.play().catch(() => {})
     startFade(audio, theme)
     startSaving(theme)
+    setMediaSession(theme, base, true)
     setIsReady(true)
   }, [theme])
 
@@ -106,6 +127,7 @@ export function useAmbientNoise(theme: Mode) {
       audio.pause()
     }
     stopSaving()
+    setMediaSession(theme, import.meta.env.BASE_URL, false)
   }, [theme])
 
   return { play, pause, isReady }
