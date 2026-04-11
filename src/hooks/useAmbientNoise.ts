@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 type Mode = 'light' | 'dark'
 
 const TARGET_VOLUME  = 0.5
-const FADE_DURATION  = 10_000   // ms — fade from 0 → TARGET_VOLUME over 10 s
+const FADE_DURATION  = 30_000   // ms — fade from 0 → TARGET_VOLUME over 30 s
 const FADE_INTERVAL  = 50       // ms — step every 50 ms (200 smooth steps)
 const SAVE_INTERVAL_MS = 1000
 const STORAGE_KEYS = {
