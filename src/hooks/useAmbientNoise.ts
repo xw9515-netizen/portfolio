@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 
 type Mode = 'light' | 'dark'
 
-const TARGET_VOLUME  = 0.5
+const TARGET_VOLUME: Record<Mode, number> = { light: 0.5, dark: 0.3 }
 const FADE_DURATION  = 30_000   // ms — fade from 0 → TARGET_VOLUME over 30 s
 const FADE_INTERVAL  = 50       // ms — step every 50 ms (200 smooth steps)
 const SAVE_INTERVAL_MS = 1000
@@ -31,14 +31,15 @@ function getAudio(mode: Mode): HTMLAudioElement {
   return audios[mode]!
 }
 
-function startFade(audio: HTMLAudioElement) {
+function startFade(audio: HTMLAudioElement, mode: Mode) {
   stopFade()
   audio.volume = 0
-  const step = TARGET_VOLUME / (FADE_DURATION / FADE_INTERVAL)
+  const target = TARGET_VOLUME[mode]
+  const step = target / (FADE_DURATION / FADE_INTERVAL)
   fadeTimer = setInterval(() => {
-    const next = Math.min(audio.volume + step, TARGET_VOLUME)
+    const next = Math.min(audio.volume + step, target)
     audio.volume = next
-    if (next >= TARGET_VOLUME) stopFade()
+    if (next >= target) stopFade()
   }, FADE_INTERVAL)
 }
 
@@ -83,7 +84,7 @@ export function useAmbientNoise(theme: Mode) {
 
     const next = getAudio(theme)
     next.play().catch(() => {})
-    startFade(next)
+    startFade(next, theme)
     startSaving(theme)
   }, [theme])
 
@@ -92,7 +93,7 @@ export function useAmbientNoise(theme: Mode) {
     const saved = localStorage.getItem(STORAGE_KEYS[theme])
     if (saved) audio.currentTime = parseFloat(saved)
     audio.play().catch(() => {})
-    startFade(audio)
+    startFade(audio, theme)
     startSaving(theme)
     setIsReady(true)
   }, [theme])
