@@ -58,7 +58,7 @@ function setMediaSession(mode: Mode, base: string, playing: boolean) {
       artist: 'Ambient',
       album:  'Xiang Wang — Portfolio',
       artwork: [
-        { src: `${base}artwork-${mode}.svg`, sizes: '512x512', type: 'image/svg+xml' },
+        { src: `${base}artwork-${mode}.png`, sizes: '512x512', type: 'image/png' },
       ],
     })
     navigator.mediaSession.playbackState = 'playing'
