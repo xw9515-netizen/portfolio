@@ -14,7 +14,6 @@ const TRACK_NAMES: Record<'light' | 'dark', string> = {
 
 function App() {
   const [isPlaying, setIsPlaying] = useState(false)
-  // Separate mount/exit state so the Now Playing block can animate out before unmounting
   const [npMounted, setNpMounted] = useState(false)
   const [npExiting, setNpExiting] = useState(false)
   const npExitTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -44,20 +43,15 @@ function App() {
     }
   }, [isPlaying, play, pause])
 
-  // Gradient changes colour with the theme
-  const gradient = theme === 'light'
-    ? 'linear-gradient(252.65deg, rgb(255, 205, 78) 0%, rgba(255, 205, 78, 0) 50%)'
-    : 'linear-gradient(252.65deg, rgb(212, 219, 255) 0%, rgba(212, 219, 255, 0) 50%)'
-
   return (
     <div
       className="min-h-screen relative overflow-hidden"
       style={{ backgroundColor: 'var(--color-bg)', transition: 'background-color 0.2s ease' }}
     >
-      {/* ── Subtle corner gradient ── */}
+      {/* ── Subtle corner gradient — colour defined in CSS tokens ── */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ backgroundImage: gradient, opacity: 0.12, transition: 'background-image 0.4s ease' }}
+        style={{ backgroundImage: 'var(--corner-gradient)', opacity: 0.12 }}
         aria-hidden="true"
       />
 
@@ -68,12 +62,12 @@ function App() {
       >
         <Nav name="Xiang Wang" page="Home" />
 
-        <div className="flex items-center" style={{ gap: '8px' }}>
-          {/* Now Playing indicator — visible only when playing */}
+        <div className="flex items-center" style={{ gap: 'var(--gap-large)' }}>
+          {/* Now Playing indicator */}
           {npMounted && (
             <div
               className={`${npExiting ? 'now-playing-exit' : 'now-playing-enter'} flex flex-col items-end`}
-              style={{ paddingBottom: '2px', whiteSpace: 'nowrap' }}
+              style={{ paddingBottom: 'var(--gap-small)', whiteSpace: 'nowrap' }}
             >
               <span
                 className="font-semibold"
@@ -81,9 +75,7 @@ function App() {
                   fontSize: '10px',
                   lineHeight: '16px',
                   letterSpacing: '0.15px',
-                  color: theme === 'light'
-                    ? 'var(--light-mode-texts-subtle-idle)'
-                    : 'var(--dark-mode-texts-secondary)',
+                  color: 'var(--color-text-subtle)',
                 }}
               >
                 Playing
@@ -93,9 +85,7 @@ function App() {
                   fontSize: '12px',
                   lineHeight: '22px',
                   letterSpacing: '0.18px',
-                  color: theme === 'light'
-                    ? 'var(--light-mode-texts-primary-default)'
-                    : 'var(--dark-mode-texts-primary-default)',
+                  color: 'var(--color-text-primary)',
                 }}
               >
                 {TRACK_NAMES[theme]}

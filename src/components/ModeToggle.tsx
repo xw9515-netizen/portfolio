@@ -33,7 +33,7 @@ export function ModeToggle() {
       onClick={toggleTheme}
       aria-label={`Switch to ${isLight ? 'dark' : 'light'} mode`}
       className="btn-toggle flex items-center rounded-xl"
-      style={{ padding: '4px', gap: '4px' }}
+      style={{ padding: 'var(--padding-small)', gap: 'var(--gap-medium)' }}
     >
       {/* Light / wave option */}
       <span

@@ -41,6 +41,9 @@
   /* Icon fill colour used by mode-toggle SVGs */
   --fill-0: #543F09;
 
+  /* Corner gradient — uses primary accent colour per theme */
+  --corner-gradient: linear-gradient(252.65deg, rgb(255, 205, 78) 0%, rgba(255, 205, 78, 0) 50%);
+
   /* Semantic aliases — light mode defaults */
   --color-bg: var(--light-mode-background-surface-default);
   --color-bg-subtle: var(--light-mode-background-subtle-default);
@@ -57,6 +60,7 @@
 
 [data-theme="dark"] {
   --fill-0: #afb6d6;
+  --corner-gradient: linear-gradient(252.65deg, rgb(212, 219, 255) 0%, rgba(212, 219, 255, 0) 50%);
 
   --color-bg: var(--dark-mode-background-surface-default);
   --color-bg-subtle: var(--dark-mode-background-primary-default);

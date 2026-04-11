@@ -36,14 +36,14 @@ const projects: Project[] = [
 
 export function ProjectList() {
   return (
-    <ul className="flex flex-col" style={{ gap: '10px', listStyle: 'none', margin: 0, padding: 0 }}>
+    <ul className="flex flex-col" style={{ gap: 'var(--gap-large)', listStyle: 'none', margin: 0, padding: 0 }}>
       {projects.map(project => (
         <li key={project.id}>
           <a
             href={project.href}
             className="project-item flex items-center"
             style={{
-              gap: '10px',
+              gap: 'var(--gap-large)',
               color: 'var(--color-text-subtle)',
               textDecoration: 'none',
             }}
