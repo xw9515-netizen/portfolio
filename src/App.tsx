@@ -3,9 +3,13 @@ import { Nav } from './components/Nav'
 import { ModeToggle } from './components/ModeToggle'
 import { PlayButton } from './components/PlayButton'
 import { MusicNotes } from './components/MusicNotes'
-import { ProjectList } from './components/ProjectList'
+import { ProgressBar } from './components/ProgressBar'
 import { useTheme } from './context/ThemeContext'
+import { useRouter } from './context/RouterContext'
 import { useAmbientNoise } from './hooks/useAmbientNoise'
+import { HomePage } from './pages/HomePage'
+import { ProjectPage } from './pages/ProjectPage'
+import { getProject } from './data/projects'
 
 const TRACK_NAMES: Record<'light' | 'dark', string> = {
   light: 'Sandy Beach',
@@ -20,7 +24,13 @@ function App() {
 
   const { theme } = useTheme()
   const { play, pause } = useAmbientNoise(theme)
+  const { pageId, transitioning, navigate } = useRouter()
 
+  // Derive current view
+  const isHome = pageId === 'home'
+  const project = isHome ? null : getProject(pageId)
+
+  // Now Playing mount / unmount animation
   useEffect(() => {
     if (npExitTimer.current) clearTimeout(npExitTimer.current)
     if (isPlaying) {
@@ -35,6 +45,7 @@ function App() {
     }
   }, [isPlaying])
 
+  // Play / pause audio
   useEffect(() => {
     if (isPlaying) {
       play()
@@ -43,12 +54,18 @@ function App() {
     }
   }, [isPlaying, play, pause])
 
+  // Nav breadcrumb labels
+  const pageName = isHome ? 'Home' : (project?.shortLabel ?? pageId)
+
   return (
     <div
       className="min-h-screen relative overflow-hidden"
       style={{ backgroundColor: 'var(--color-bg)', transition: 'background-color 0.2s ease' }}
     >
-      {/* ── Subtle corner gradient — colour defined in CSS tokens ── */}
+      {/* ── Progress bar (top of viewport) ── */}
+      <ProgressBar active={transitioning} key={transitioning ? 'active' : 'idle'} />
+
+      {/* ── Subtle corner gradient ── */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{ backgroundImage: 'var(--corner-gradient)', opacity: 0.12 }}
@@ -60,7 +77,11 @@ function App() {
         className="relative flex items-center justify-between"
         style={{ padding: '32px var(--margin-large) 0' }}
       >
-        <Nav name="Xiang Wang" page="Home" />
+        <Nav
+          name="Xiang Wang"
+          page={pageName}
+          onNameClick={!isHome ? () => navigate('home') : undefined}
+        />
 
         <div className="flex items-center" style={{ gap: 'var(--gap-large)' }}>
           {/* Now Playing indicator */}
@@ -70,30 +91,21 @@ function App() {
               style={{ paddingBottom: 'var(--gap-small)', whiteSpace: 'nowrap' }}
             >
               <span
-                className="font-semibold"
-                style={{
-                  fontSize: '10px',
-                  lineHeight: '16px',
-                  letterSpacing: '0.15px',
-                  color: 'var(--color-text-subtle)',
-                }}
+                className="text-extra-small"
+                style={{ color: 'var(--color-text-subtle)' }}
               >
                 Playing
               </span>
               <span
-                style={{
-                  fontSize: '12px',
-                  lineHeight: '22px',
-                  letterSpacing: '0.18px',
-                  color: 'var(--color-text-primary)',
-                }}
+                className="text-copy-small"
+                style={{ color: 'var(--color-text-primary)' }}
               >
                 {TRACK_NAMES[theme]}
               </span>
             </div>
           )}
 
-          {/* Play button with notes floating on top */}
+          {/* Play button with floating notes */}
           <div className="relative w-8 h-8">
             <PlayButton isPlaying={isPlaying} onToggle={() => setIsPlaying(p => !p)} />
             <MusicNotes isPlaying={isPlaying} />
@@ -103,49 +115,15 @@ function App() {
         </div>
       </header>
 
-      {/* ── Main content ── */}
-      <main
-        className="relative"
-        style={{ padding: '0 var(--margin-large)', marginTop: 'var(--margin-medium)' }}
-      >
-        <hr
-          style={{
-            border: 'none',
-            borderTop: '1px dashed var(--color-border)',
-            margin: '0 0 var(--margin-medium)',
-            transition: 'border-color 0.2s ease',
-          }}
-        />
-
-        <p
-          style={{
-            maxWidth: '794px',
-            color: 'var(--color-text-primary)',
-            margin: '0 0 var(--margin-medium)',
-            fontSize: '14px',
-            lineHeight: '22px',
-            letterSpacing: '0.21px',
-          }}
-        >
-          I&apos;m Xiang Wang, a product designer with five years of experience at{' '}
-          [Company], a B2B SaaS startup where I was one of three designers. In a small
-          team, ownership isn&apos;t optional — I&apos;ve taken projects from early problem
-          framing to shipped product, working closely with engineers and PMs throughout.
-          Below is a selection of work across product design and design systems.
-        </p>
-
-        <hr
-          style={{
-            border: 'none',
-            borderTop: '1px dashed var(--color-border)',
-            margin: '0 0 var(--margin-medium)',
-            maxWidth: '794px',
-            transition: 'border-color 0.2s ease',
-          }}
-        />
-
-        <ProjectList />
-      </main>
+      {/* ── Page content — key triggers slide-up animation on each navigation ── */}
+      {isHome ? (
+        <HomePage key="home" />
+      ) : project ? (
+        <ProjectPage key={project.id} project={project} />
+      ) : (
+        // Fallback: unknown project id — go home
+        <HomePage key="home-fallback" />
+      )}
     </div>
   )
 }

@@ -1,51 +1,20 @@
-interface Project {
-  id: string
-  label: string
-  icon: string
-  href: string
-}
-
-const base = import.meta.env.BASE_URL
-
-const projects: Project[] = [
-  {
-    id: 'protocol-import',
-    label: 'Protocol Import with AI',
-    icon: `${base}import.svg`,
-    href: '#protocol-import',
-  },
-  {
-    id: 'protocol-authoring',
-    label: 'Protocol Authoring with AI (Word Add-in)',
-    icon: `${base}author.svg`,
-    href: '#protocol-authoring',
-  },
-  {
-    id: 'schedule',
-    label: 'Schedule of Activities manager',
-    icon: `${base}schedule.svg`,
-    href: '#schedule',
-  },
-  {
-    id: 'tip-jar',
-    label: 'Tip top jar',
-    icon: `${base}tip.svg`,
-    href: '#tip-jar',
-  },
-]
+import { projects } from '../data/projects'
+import { useRouter } from '../context/RouterContext'
 
 export function ProjectList() {
+  const { navigate } = useRouter()
+
   return (
     <ul className="flex flex-col" style={{ gap: 'var(--gap-large)', listStyle: 'none', margin: 0, padding: 0 }}>
       {projects.map(project => (
         <li key={project.id}>
-          <a
-            href={project.href}
-            className="project-item flex items-center"
+          <button
+            onClick={() => navigate(project.id)}
+            className="project-item flex items-center w-full text-left bg-transparent border-0 p-0"
             style={{
               gap: 'var(--gap-large)',
               color: 'var(--color-text-subtle)',
-              textDecoration: 'none',
+              cursor: 'pointer',
             }}
           >
             {/* Icon wrapper: tilted -15° by default, straightens on hover */}
@@ -58,10 +27,10 @@ export function ProjectList() {
                 style={{ borderRadius: 'var(--border-radius-small)' }}
               />
             </span>
-            <span className="text-sm" style={{ color: 'var(--color-text-subtle)' }}>
+            <span className="text-copy-medium" style={{ color: 'var(--color-text-subtle)' }}>
               {project.label}
             </span>
-          </a>
+          </button>
         </li>
       ))}
     </ul>
