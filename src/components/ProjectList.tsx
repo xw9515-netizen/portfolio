@@ -5,29 +5,31 @@ interface Project {
   href: string
 }
 
+const base = import.meta.env.BASE_URL
+
 const projects: Project[] = [
   {
     id: 'protocol-import',
     label: 'Protocol Import with AI',
-    icon: '/import.svg',
+    icon: `${base}import.svg`,
     href: '#protocol-import',
   },
   {
     id: 'protocol-authoring',
     label: 'Protocol Authoring with AI (Word Add-in)',
-    icon: '/author.svg',
+    icon: `${base}author.svg`,
     href: '#protocol-authoring',
   },
   {
     id: 'schedule',
     label: 'Schedule of Activities manager',
-    icon: '/schedule.svg',
+    icon: `${base}schedule.svg`,
     href: '#schedule',
   },
   {
     id: 'tip-jar',
     label: 'Tip top jar',
-    icon: '/tip.svg',
+    icon: `${base}tip.svg`,
     href: '#tip-jar',
   },
 ]

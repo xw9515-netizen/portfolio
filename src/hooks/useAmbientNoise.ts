@@ -17,7 +17,8 @@ let saveTimer: ReturnType<typeof setInterval> | null = null
 
 function getAudio(mode: Mode): HTMLAudioElement {
   if (!audios[mode]) {
-    const src = mode === 'light' ? '/light-noise.mp3' : '/night-noise.mp3'
+    const base = import.meta.env.BASE_URL
+    const src = mode === 'light' ? `${base}light-noise.mp3` : `${base}night-noise.mp3`
     const el = new Audio(src)
     el.loop = true
     el.volume = VOLUME

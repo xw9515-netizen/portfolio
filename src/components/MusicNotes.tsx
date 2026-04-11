@@ -9,11 +9,11 @@ export function MusicNotes({ isPlaying }: MusicNotesProps) {
   return (
     // Absolutely covers the play button; notes escape upward via overflow-visible
     <div className="absolute inset-0 pointer-events-none overflow-visible" aria-hidden="true">
-      <img src="/music-note-1.svg" alt="" className="music-note music-note-1"
+      <img src={`${import.meta.env.BASE_URL}music-note-1.svg`} alt="" className="music-note music-note-1"
         style={{ animationPlayState: state, opacity: hidden }} />
-      <img src="/music-note-2.svg" alt="" className="music-note music-note-2"
+      <img src={`${import.meta.env.BASE_URL}music-note-2.svg`} alt="" className="music-note music-note-2"
         style={{ animationPlayState: state, opacity: hidden }} />
-      <img src="/music-note-1.svg" alt="" className="music-note music-note-3"
+      <img src={`${import.meta.env.BASE_URL}music-note-1.svg`} alt="" className="music-note music-note-3"
         style={{ animationPlayState: state, opacity: hidden }} />
     </div>
   )
