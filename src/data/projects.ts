@@ -6,18 +6,21 @@ export interface StatCard {
 }
 
 export interface ProjectSection {
-  /** Optional section heading */
+  /** Small label above the section heading, e.g. "01 — The problem" */
+  caption?: string
+  /** H2 title */
   heading?: string
   body: string
 }
 
 export interface Project {
   id: string
+  /** List-item label (shown in ProjectList and as the caption above H1 on the project page) */
   label: string
   icon: string
-  /** Short page-nav label (e.g. "Protocol Import") */
+  /** Short breadcrumb label for the nav pill */
   shortLabel: string
-  /** Full page title shown on the project page */
+  /** H1 title on the project page */
   title: string
   stats: StatCard[]
   sections: ProjectSection[]
@@ -29,7 +32,7 @@ export const projects: Project[] = [
     label: 'Protocol Import with AI',
     shortLabel: 'Protocol Import',
     icon: `${base}import.svg`,
-    title: 'Redesigning the SOA Rule Builder',
+    title: 'Protocol Import with AI',
     stats: [
       { value: '3', label: 'Months' },
       { value: '1', label: 'Designer' },
@@ -37,16 +40,9 @@ export const projects: Project[] = [
     ],
     sections: [
       {
-        heading: 'Overview',
-        body: 'The SOA (Schedule of Activities) Rule Builder is a core configuration tool used by clinical trial coordinators to define complex scheduling logic. The original interface required users to hand-code rules in a proprietary syntax, leading to frequent errors and long onboarding times.',
-      },
-      {
-        heading: 'Problem',
-        body: 'Coordinators spent an average of 45 minutes configuring a single SOA rule. Syntax errors accounted for 30% of all support tickets. New users needed 2–3 weeks of training before they could work independently.',
-      },
-      {
-        heading: 'Approach',
-        body: 'I ran five contextual-inquiry sessions with coordinators, then facilitated a design sprint with the product and engineering team. We moved from a free-form code editor to a structured visual builder that generates the underlying rule syntax automatically.',
+        caption: '01 — Overview',
+        heading: 'Importing protocols at scale',
+        body: 'Clinical teams receive protocol documents in dozens of formats — Word, PDF, sponsor templates — and must manually recreate every schedule entry. This project introduced an AI-assisted import flow that parses incoming documents and maps them to the correct data model, cutting import time from hours to minutes.',
       },
     ],
   },
@@ -63,7 +59,8 @@ export const projects: Project[] = [
     ],
     sections: [
       {
-        heading: 'Overview',
+        caption: '01 — Overview',
+        heading: 'Writing where writers already work',
         body: 'A Microsoft Word Add-in that brings AI-assisted drafting directly into the tool where clinical writers already work. The add-in surfaces relevant protocol templates, flags compliance issues in real time, and suggests structured language based on therapeutic area.',
       },
     ],
@@ -73,16 +70,17 @@ export const projects: Project[] = [
     label: 'Schedule of Activities manager',
     shortLabel: 'SOA Manager',
     icon: `${base}schedule.svg`,
-    title: 'Schedule of Activities Manager',
+    title: 'Redesigning the SOA Rule Builder',
     stats: [
-      { value: '4', label: 'Months' },
-      { value: '1', label: 'Designer' },
-      { value: '3', label: 'Engineers' },
+      { value: '85%', label: 'reduction in time-to-task' },
+      { value: '0', label: 'support tickets post-launch for rule confusion' },
+      { value: '45→5', label: 'minutes to configure a full schedule' },
     ],
     sections: [
       {
-        heading: 'Overview',
-        body: 'A dedicated management interface for creating, versioning, and comparing Schedules of Activities across clinical trial protocols. Built to replace a fragmented spreadsheet workflow used by 200+ study coordinators.',
+        caption: '01 — The problem',
+        heading: 'The linearity bottleneck',
+        body: 'Clinical coordinators arrive at the scheduling tool with a fully-realized plan already on paper — a Schedule of Activities (SOA) laying out every visit, sample, and procedure across the entire study timeline. The system, however, treated each entry as an isolated event: open modal → configure one rule → save → repeat.\n\nFor a typical study with 20+ activity types, this forced a mismatch between the user\'s holistic mental model and the system\'s atomic workflow. The result was "modal fatigue" — constant context switching, repetitive form-filling, and no ability to see the full picture until every individual step was committed.',
       },
     ],
   },
@@ -99,7 +97,8 @@ export const projects: Project[] = [
     ],
     sections: [
       {
-        heading: 'Overview',
+        caption: '01 — Overview',
+        heading: 'Tipping without friction',
         body: 'A lightweight tipping experience designed for small service businesses. The goal was to make leaving a tip as frictionless as tapping once — no app download, no account required.',
       },
     ],

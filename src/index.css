@@ -55,12 +55,14 @@
   --color-bg-dark-hue-hover: var(--light-mode-background-dark-hue-hover);
   --color-text-primary: var(--light-mode-texts-primary-default);
   --color-text-subtle: var(--light-mode-texts-subtle-idle);
+  --color-text-accent: var(--fill-0);
   --color-border: var(--light-mode-border-default);
 }
 
 [data-theme="dark"] {
   --fill-0: #afb6d6;
   --corner-gradient: linear-gradient(252.65deg, rgb(212, 219, 255) 0%, rgba(212, 219, 255, 0) 50%);
+  --color-text-accent: var(--dark-mode-texts-primary-default);
 
   --color-bg: var(--dark-mode-background-surface-default);
   --color-bg-subtle: var(--dark-mode-background-primary-default);
@@ -117,6 +119,26 @@
   line-height: 16px;
   letter-spacing: 0.15px;
   font-weight: 600;
+}
+
+/* ── Dotted page divider ── */
+/*
+  Matches Figma: 1.5 px tall, round dots spaced every 6 px.
+  Uses radial-gradient because CSS `dotted` border produces squares on most engines.
+  The colour variable updates instantly on theme switch (no transition needed —
+  the page bg transition masks any flash).
+*/
+.page-divider {
+  display: block;
+  width: 100%;
+  height: 1.5px;
+  background-image: radial-gradient(circle, var(--color-border) 0.75px, transparent 0.75px);
+  background-size: 6px 1.5px;
+  background-repeat: repeat-x;
+  background-position: left center;
+  border: none;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 /* ── Progress bar ── */

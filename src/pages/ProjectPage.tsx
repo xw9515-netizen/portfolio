@@ -10,57 +10,73 @@ export function ProjectPage({ project }: ProjectPageProps) {
       className="relative page-enter"
       style={{ padding: '0 var(--margin-large)', marginTop: 'var(--margin-medium)' }}
     >
-      {/* ── Dashed divider ── */}
-      <hr
-        style={{
-          border: 'none',
-          borderTop: '1px dashed var(--color-border)',
-          margin: '0 0 var(--margin-medium)',
-          transition: 'border-color 0.2s ease',
-        }}
+      {/* ── Divider ── */}
+      <div className="page-divider" style={{ marginBottom: 'var(--margin-medium)' }} />
+
+      {/* ── Caption + H1 block (gap 4px between them) ── */}
+      <div
+        className="flex flex-col"
+        style={{ gap: 'var(--gap-medium)', marginBottom: 'var(--margin-medium)', maxWidth: '794px' }}
+      >
+        <p
+          className="text-label-small"
+          style={{ color: 'var(--color-text-subtle)', margin: 0 }}
+        >
+          {project.label}
+        </p>
+        <h1
+          className="text-title-large"
+          style={{ color: 'var(--color-text-accent)', margin: 0 }}
+        >
+          {project.title}
+        </h1>
+      </div>
+
+      {/* ── Divider ── */}
+      <div
+        className="page-divider"
+        style={{ marginBottom: 'var(--margin-medium)', maxWidth: '794px' }}
       />
 
-      {/* ── Title ── */}
-      <h1
-        className="text-title-large"
-        style={{
-          color: 'var(--color-text-primary)',
-          margin: '0 0 var(--margin-medium)',
-          maxWidth: '794px',
-        }}
-      >
-        {project.title}
-      </h1>
-
-      {/* ── Stat cards ── */}
+      {/* ── Stat cards — equal flex widths, 20px gap ── */}
       {project.stats.length > 0 && (
         <div
           className="flex"
-          style={{ gap: 'var(--gap-large)', margin: '0 0 var(--margin-medium)', flexWrap: 'wrap' }}
+          style={{
+            gap: 'var(--margin-small)',
+            marginBottom: 'var(--margin-medium)',
+            maxWidth: '794px',
+          }}
         >
           {project.stats.map((stat, i) => (
             <div
               key={i}
               className="flex flex-col items-center justify-center"
               style={{
+                flex: '1 0 0',
                 backgroundColor: 'var(--color-bg-subtle)',
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--border-radius-large)',
+                borderRadius: 'var(--border-radius-medium)',
                 padding: 'var(--padding-large)',
-                minWidth: '96px',
-                gap: 'var(--gap-small)',
-                transition: 'background-color 0.2s ease, border-color 0.2s ease',
+                gap: 'var(--gap-large)',
+                transition: 'background-color 0.2s ease',
+                minHeight: '112px',
               }}
             >
+              {/* Value — Instrument Serif, accent colour */}
               <span
                 className="text-title-medium"
-                style={{ color: 'var(--color-text-primary)' }}
+                style={{ color: 'var(--color-text-accent)', whiteSpace: 'nowrap' }}
               >
                 {stat.value}
               </span>
+              {/* Label — Inter Regular, subtle colour, centred */}
               <span
-                className="text-label-small"
-                style={{ color: 'var(--color-text-subtle)' }}
+                className="text-copy-small"
+                style={{
+                  color: 'var(--color-text-subtle)',
+                  textAlign: 'center',
+                  width: '100%',
+                }}
               >
                 {stat.label}
               </span>
@@ -69,47 +85,58 @@ export function ProjectPage({ project }: ProjectPageProps) {
         </div>
       )}
 
-      {/* ── Dashed divider ── */}
-      <hr
-        style={{
-          border: 'none',
-          borderTop: '1px dashed var(--color-border)',
-          margin: '0 0 var(--margin-medium)',
-          maxWidth: '794px',
-          transition: 'border-color 0.2s ease',
-        }}
+      {/* ── Divider ── */}
+      <div
+        className="page-divider"
+        style={{ marginBottom: 'var(--margin-medium)', maxWidth: '794px' }}
       />
 
       {/* ── Content sections ── */}
       <div
         className="flex flex-col"
-        style={{ gap: 'var(--margin-small)', maxWidth: '794px' }}
+        style={{ gap: 'var(--margin-medium)', maxWidth: '794px' }}
       >
         {project.sections.map((section, i) => (
-          <div key={i} className="flex flex-col" style={{ gap: 'var(--gap-large)' }}>
-            {section.heading && (
-              <h2
-                className="text-label-small"
-                style={{ color: 'var(--color-text-subtle)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.08em' }}
-              >
-                {section.heading}
-              </h2>
+          <div key={i} className="flex flex-col" style={{ gap: 'var(--margin-medium)' }}>
+
+            {/* Caption + H2 block (gap 4px between them) */}
+            {(section.caption || section.heading) && (
+              <div className="flex flex-col" style={{ gap: 'var(--gap-medium)' }}>
+                {section.caption && (
+                  <p
+                    className="text-label-small"
+                    style={{ color: 'var(--color-text-subtle)', margin: 0 }}
+                  >
+                    {section.caption}
+                  </p>
+                )}
+                {section.heading && (
+                  <h2
+                    className="text-title-medium"
+                    style={{ color: 'var(--color-text-primary)', margin: 0 }}
+                  >
+                    {section.heading}
+                  </h2>
+                )}
+              </div>
             )}
-            <p
-              className="text-copy-medium"
-              style={{ color: 'var(--color-text-primary)', margin: 0 }}
-            >
-              {section.body}
-            </p>
+
+            {/* Body — preserves \n as paragraph breaks */}
+            <div className="flex flex-col" style={{ gap: 'var(--padding-large)' }}>
+              {section.body.split('\n\n').map((para, j) => (
+                <p
+                  key={j}
+                  className="text-copy-medium"
+                  style={{ color: 'var(--color-text-primary)', margin: 0 }}
+                >
+                  {para}
+                </p>
+              ))}
+            </div>
+
+            {/* Divider between sections (not after last) */}
             {i < project.sections.length - 1 && (
-              <hr
-                style={{
-                  border: 'none',
-                  borderTop: '1px dashed var(--color-border)',
-                  margin: '0',
-                  transition: 'border-color 0.2s ease',
-                }}
-              />
+              <div className="page-divider" />
             )}
           </div>
         ))}

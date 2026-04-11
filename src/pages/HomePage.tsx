@@ -6,14 +6,7 @@ export function HomePage() {
       className="relative page-enter"
       style={{ padding: '0 var(--margin-large)', marginTop: 'var(--margin-medium)' }}
     >
-      <hr
-        style={{
-          border: 'none',
-          borderTop: '1px dashed var(--color-border)',
-          margin: '0 0 var(--margin-medium)',
-          transition: 'border-color 0.2s ease',
-        }}
-      />
+      <div className="page-divider" style={{ marginBottom: 'var(--margin-medium)' }} />
 
       <p
         className="text-copy-medium"
@@ -30,14 +23,9 @@ export function HomePage() {
         Below is a selection of work across product design and design systems.
       </p>
 
-      <hr
-        style={{
-          border: 'none',
-          borderTop: '1px dashed var(--color-border)',
-          margin: '0 0 var(--margin-medium)',
-          maxWidth: '794px',
-          transition: 'border-color 0.2s ease',
-        }}
+      <div
+        className="page-divider"
+        style={{ marginBottom: 'var(--margin-medium)', maxWidth: '794px' }}
       />
 
       <ProjectList />
