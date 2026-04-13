@@ -4,6 +4,35 @@ interface ProjectPageProps {
   project: Project
 }
 
+/**
+ * Renders a stat value string, replacing any `→` with a scaled-down Inter span
+ * so it visually matches the surrounding Instrument Serif numerals rather than
+ * dwarfing them with Inter's full-size arrow glyph metrics.
+ */
+function StatValue({ value }: { value: string }) {
+  if (!value.includes('→')) return <>{value}</>
+  const parts = value.split('→')
+  return (
+    <>
+      {parts.map((part, i) => (
+        <span key={i}>
+          {part}
+          {i < parts.length - 1 && (
+            <span style={{
+              fontFamily: "'Inter', system-ui, sans-serif",
+              fontSize: '18px',
+              fontWeight: 400,
+              letterSpacing: 0,
+              verticalAlign: 'middle',
+              margin: '0 2px',
+            }}>→</span>
+          )}
+        </span>
+      ))}
+    </>
+  )
+}
+
 export function ProjectPage({ project }: ProjectPageProps) {
   return (
     <main
@@ -67,7 +96,7 @@ export function ProjectPage({ project }: ProjectPageProps) {
                 className="text-title-medium"
                 style={{ color: 'var(--color-text-accent)', whiteSpace: 'nowrap' }}
               >
-                {stat.value}
+                <StatValue value={stat.value} />
               </span>
               {/* Label — Inter Regular, subtle colour, centred */}
               <span
