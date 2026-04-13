@@ -79,14 +79,14 @@
 
 /* ── Typography system ── */
 .text-title-large {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Instrument Serif', 'Inter', system-ui, sans-serif;
   font-size: 48px;
   line-height: 64px;
   letter-spacing: 0.72px;
   font-weight: 400;
 }
 .text-title-medium {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'Instrument Serif', 'Inter', system-ui, sans-serif;
   font-size: 32px;
   line-height: 40px;
   letter-spacing: 0.48px;
