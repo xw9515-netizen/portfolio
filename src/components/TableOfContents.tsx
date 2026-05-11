@@ -74,18 +74,21 @@ export function TableOfContents({ topId, topLabel, sections }: TableOfContentsPr
             padding: '2px 0',
           }}
         >
-          {/* 2 px tall pill dash — matches Figma's border-based indicator */}
+          {/* 6×6 circle — filled when active, stroked when inactive */}
           <span
             aria-hidden="true"
             style={{
               display: 'block',
-              width: '16px',
-              height: '2px',
-              border: `1px solid ${isActive ? 'var(--color-text-subtle)' : 'var(--color-border)'}`,
-              borderRadius: '4px',
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
               flexShrink: 0,
-              transition: 'border-color 200ms ease',
               boxSizing: 'border-box',
+              transition: 'background-color 200ms ease, border-color 200ms ease',
+              ...(isActive
+                ? { backgroundColor: 'var(--color-text-primary)', border: 'none' }
+                : { backgroundColor: 'transparent', border: '0.5px solid var(--color-text-subtle)' }
+              ),
             }}
           />
           <span style={{ whiteSpace: 'nowrap' }}>{label}</span>
@@ -101,7 +104,9 @@ export function TableOfContents({ topId, topLabel, sections }: TableOfContentsPr
         position: 'fixed',
         /* Keeps TOC left of the centred 580 px content column */
         left: 'max(20px, calc(50vw - 584px))',
-        top: '120px',
+        /* Vertically centred in the viewport */
+        top: '50%',
+        transform: 'translateY(-50%)',
         width: '220px',
       }}
     >
