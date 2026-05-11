@@ -8,7 +8,8 @@ import { useTheme } from './context/ThemeContext'
 import { useRouter } from './context/RouterContext'
 import { useAmbientNoise } from './hooks/useAmbientNoise'
 import { HomePage } from './pages/HomePage'
-import { ProjectPage } from './pages/ProjectPage'
+import { ProjectPage, PROJECT_TOP_ID } from './pages/ProjectPage'
+import { TableOfContents } from './components/TableOfContents'
 import { getProject } from './data/projects'
 
 const TRACK_NAMES: Record<'light' | 'dark', string> = {
@@ -135,6 +136,20 @@ function App() {
           </div>
         </div>
       </header>
+
+      {/*
+        ── TOC rendered HERE, outside any animated/transformed element ──
+        position:fixed children of an element with an active CSS transform
+        (like the page-enter animation's translateY) behave like position:absolute.
+        Keeping the TOC as a direct child of the root div avoids that issue entirely.
+      */}
+      {!isHome && project && project.sections.length > 0 && (
+        <TableOfContents
+          topId={PROJECT_TOP_ID}
+          topLabel={project.title}
+          sections={project.sections}
+        />
+      )}
 
       {/* ── Page content ── */}
       <div style={{ position: 'relative', zIndex: 1 }}>

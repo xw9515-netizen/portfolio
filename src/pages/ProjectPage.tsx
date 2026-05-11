@@ -1,5 +1,4 @@
 import { Project, SectionBlock } from '../data/projects'
-import { TableOfContents } from '../components/TableOfContents'
 
 interface ProjectPageProps {
   project: Project
@@ -101,21 +100,11 @@ function StatValue({ value }: { value: string }) {
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
-export function ProjectPage({ project }: ProjectPageProps) {
-  const TOP_ID = 'top'
-  const hasSections = project.sections.length > 0
+export const PROJECT_TOP_ID = 'top'
 
+export function ProjectPage({ project }: ProjectPageProps) {
   return (
     <main className="relative page-enter">
-      {/* Fixed left-side TOC — only visible at wide viewports (CSS hides below 1280 px) */}
-      {hasSections && (
-        <TableOfContents
-          topId={TOP_ID}
-          topLabel={project.title}
-          sections={project.sections}
-        />
-      )}
-
       {/* Centred content column — 580 px, matching Figma */}
       <article
         style={{
@@ -130,7 +119,7 @@ export function ProjectPage({ project }: ProjectPageProps) {
       >
         {/* ── Hero ── */}
         <header
-          id={TOP_ID}
+          id={PROJECT_TOP_ID}
           style={{
             display: 'flex',
             flexDirection: 'column',

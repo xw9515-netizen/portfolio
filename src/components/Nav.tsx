@@ -23,10 +23,14 @@ export function Nav({ name, page, onNameClick, collapseSecondary = false }: NavP
         onKeyDown={onNameClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') onNameClick() } : undefined}
         className="px-2 py-0.5 rounded-md text-label-small cursor-default select-none transition-colors duration-150"
         style={{
-          border: isDark ? 'none' : '0.5px solid var(--color-border)',
-          backgroundColor: isDark ? 'var(--dark-mode-background-primary-default)' : 'transparent',
+          border: '0.5px solid var(--color-border)',
+          // Back button gets a filled background to invite clicking; plain name is borderless in dark
+          backgroundColor: onNameClick
+            ? 'var(--color-bg-subtle)'
+            : isDark ? 'var(--dark-mode-background-primary-default)' : 'transparent',
           color: isDark ? 'var(--dark-mode-texts-primary-default)' : 'var(--color-text-subtle)',
           cursor: onNameClick ? 'pointer' : 'default',
+          borderColor: isDark && !onNameClick ? 'transparent' : 'var(--color-border)',
         }}
       >
         {onNameClick && (
