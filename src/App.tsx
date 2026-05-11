@@ -16,11 +16,15 @@ const TRACK_NAMES: Record<'light' | 'dark', string> = {
   dark: 'Astral Night',
 }
 
+/** Scroll distance (px) after which the header collapses to its compact form. */
+const SCROLL_THRESHOLD = 32
+
 function App() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [npMounted, setNpMounted] = useState(false)
   const [npExiting, setNpExiting] = useState(false)
   const npExitTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [isScrolled, setIsScrolled] = useState(false)
 
   const { theme } = useTheme()
   const { play, pause } = useAmbientNoise(theme)
@@ -29,6 +33,20 @@ function App() {
   // Derive current view
   const isHome = pageId === 'home'
   const project = isHome ? null : getProject(pageId)
+
+  // Reset scroll position on every navigation so the new page starts at top
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' })
+    setIsScrolled(false)
+  }, [pageId])
+
+  // Track scroll position to collapse the header
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > SCROLL_THRESHOLD)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   // Now Playing mount / unmount animation
   useEffect(() => {
@@ -59,34 +77,34 @@ function App() {
 
   return (
     <div
-      className="min-h-screen relative overflow-hidden"
+      className="min-h-screen relative"
+      data-scrolled={isScrolled ? 'true' : 'false'}
       style={{ backgroundColor: 'var(--color-bg)', transition: 'background-color 0.2s ease' }}
     >
       {/* ── Progress bar (top of viewport) ── */}
       <ProgressBar active={transitioning} key={transitioning ? 'active' : 'idle'} />
 
-      {/* ── Subtle corner gradient ── */}
+      {/* ── Subtle corner gradient (page background, not in header) ── */}
       <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ backgroundImage: 'var(--corner-gradient)', opacity: 0.12 }}
+        className="fixed inset-0 pointer-events-none"
+        style={{ backgroundImage: 'var(--corner-gradient)', opacity: 0.12, zIndex: 0 }}
         aria-hidden="true"
       />
 
-      {/* ── Header ── */}
-      <header
-        className="relative flex items-center justify-between"
-        style={{ padding: '32px var(--margin-large) 0' }}
-      >
+      {/* ── Header (sticky; collapses on scroll) ── */}
+      <header className="app-header flex items-center justify-between">
         <Nav
           name="Xiang Wang"
           page={pageName}
           onNameClick={!isHome ? () => navigate('home') : undefined}
+          collapseSecondary
         />
 
         <div className="flex items-center" style={{ gap: 'var(--gap-large)' }}>
-          {/* Now Playing indicator */}
+          {/* Now Playing label — hides on scroll */}
           {npMounted && (
             <div
+              data-collapse-on-scroll
               className={`${npExiting ? 'now-playing-exit' : 'now-playing-enter'} flex flex-col items-end`}
               style={{ paddingBottom: 'var(--gap-small)', whiteSpace: 'nowrap' }}
             >
@@ -105,25 +123,30 @@ function App() {
             </div>
           )}
 
-          {/* Play button with floating notes */}
+          {/* Play button with floating notes — stays on scroll */}
           <div className="relative w-8 h-8">
             <PlayButton isPlaying={isPlaying} onToggle={() => setIsPlaying(p => !p)} />
             <MusicNotes isPlaying={isPlaying} />
           </div>
 
-          <ModeToggle />
+          {/* Mode toggle — hides on scroll */}
+          <div data-collapse-on-scroll>
+            <ModeToggle />
+          </div>
         </div>
       </header>
 
-      {/* ── Page content — key triggers slide-up animation on each navigation ── */}
-      {isHome ? (
-        <HomePage key="home" />
-      ) : project ? (
-        <ProjectPage key={project.id} project={project} />
-      ) : (
-        // Fallback: unknown project id — go home
-        <HomePage key="home-fallback" />
-      )}
+      {/* ── Page content ── */}
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        {isHome ? (
+          <HomePage key="home" />
+        ) : project ? (
+          <ProjectPage key={project.id} project={project} />
+        ) : (
+          // Fallback: unknown project id — go home
+          <HomePage key="home-fallback" />
+        )}
+      </div>
     </div>
   )
 }

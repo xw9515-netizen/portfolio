@@ -57,6 +57,9 @@
   --color-text-subtle: var(--light-mode-texts-subtle-idle);
   --color-text-accent: var(--fill-0);
   --color-border: var(--light-mode-border-default);
+
+  /* Hero image placeholder background (slightly bluer than --color-bg-subtle) */
+  --color-image-placeholder: #e2e2ea;
 }
 
 [data-theme="dark"] {
@@ -75,6 +78,7 @@
   --color-text-primary: var(--dark-mode-texts-primary-default);
   --color-text-subtle: var(--dark-mode-texts-primary-default);
   --color-border: var(--dark-mode-border-default);
+  --color-image-placeholder: #2a2f48;
 }
 
 /* ── Typography system ── */
@@ -290,6 +294,51 @@
 }
 .btn-toggle-option:hover {
   background-color: var(--color-bg-subtle-hover);
+}
+
+/* ── Sticky header on scroll ── */
+/*
+  The header is naturally in flow on page load (large padding-top, full breadcrumb,
+  music label, mode toggle visible). Once scrolled past a small threshold, the
+  parent element gets [data-scrolled="true"] and we:
+    - sticky-pin the header to the top of the viewport
+    - shrink padding
+    - hide the secondary breadcrumb pill, the mode toggle, and the "Playing" label
+  CSS-only — no layout-triggering JS measurements.
+*/
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: var(--color-bg);
+  padding: 32px var(--margin-large) 0;
+  transition: padding 200ms ease, background-color 0.2s ease;
+}
+[data-scrolled="true"] .app-header {
+  padding: 16px var(--margin-large);
+  background-color: color-mix(in srgb, var(--color-bg) 92%, transparent);
+  backdrop-filter: saturate(180%) blur(8px);
+  -webkit-backdrop-filter: saturate(180%) blur(8px);
+}
+[data-scrolled="true"] .app-header [data-collapse-on-scroll] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 150ms ease, visibility 0s 150ms;
+}
+.app-header [data-collapse-on-scroll] {
+  transition: opacity 200ms ease;
+}
+
+/* ── Project-page TOC: hide on narrow viewports ── */
+@media (max-width: 1100px) {
+  .project-toc-col,
+  .project-right-col {
+    display: none;
+  }
+  .project-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
 }
 
 /* ── Base ── */
