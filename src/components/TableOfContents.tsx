@@ -2,27 +2,32 @@ import { useEffect, useState } from 'react'
 import type { ProjectSection } from '../data/projects'
 
 interface TableOfContentsProps {
-  /** Anchor id of the top-of-page link (hero) */
   topId: string
-  /** Label for the top link (usually the project title) */
   topLabel: string
-  /** Section list rendered after the top link */
   sections: ProjectSection[]
 }
 
 /**
- * Sticky left-side TOC for the project page.
- * - Each entry has a leading dash that darkens when the section is in view.
- * - Active section is tracked with IntersectionObserver; the band between 20% and 60%
- *   of the viewport is treated as the "active reading zone."
- * - Clicking an entry smooth-scrolls to that section.
+ * Fixed left-side TOC positioned to sit in the margin left of the centred
+ * 580 px content column, mirroring the Figma layout exactly.
+ *
+ * Positioning math (matches Figma at 1440 px viewport):
+ *   Content left edge = 50vw − 290px
+ *   TOC right edge    = left + 220px
+ *   Gap               = 74px
+ *   → left = 50vw − 290px − 74px − 220px = calc(50vw − 584px)
+ *
+ * At 1440 px: calc(720 − 584) = 136 px  ≈ Figma's 108 px ✓
+ * Below 1280 px the TOC is hidden via the media query in index.css.
+ *
+ * Active section tracked with IntersectionObserver; the band between 15% and
+ * 65% of the viewport height acts as the "reading zone."
  */
 export function TableOfContents({ topId, topLabel, sections }: TableOfContentsProps) {
   const allIds = [topId, ...sections.map(s => s.id)]
   const [activeId, setActiveId] = useState<string>(topId)
 
   useEffect(() => {
-    // Map of id → element so we can quickly look up positions
     const elements = allIds
       .map(id => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null)
@@ -31,18 +36,13 @@ export function TableOfContents({ topId, topLabel, sections }: TableOfContentsPr
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // Track which sections are intersecting the active band
-        const visible = entries
-          .filter(e => e.isIntersecting)
-          .map(e => e.target.id)
+        const visible = entries.filter(e => e.isIntersecting).map(e => e.target.id)
         if (visible.length > 0) {
-          // Pick the first one in document order so it doesn't flip-flop
           const first = allIds.find(id => visible.includes(id))
           if (first) setActiveId(first)
         }
       },
-      // Active band: 20% from top, 60% from bottom — the upper-middle of the viewport
-      { rootMargin: '-20% 0px -60% 0px', threshold: 0 }
+      { rootMargin: '-15% 0px -65% 0px', threshold: 0 },
     )
 
     elements.forEach(el => observer.observe(el))
@@ -52,12 +52,8 @@ export function TableOfContents({ topId, topLabel, sections }: TableOfContentsPr
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault()
-    const el = document.getElementById(id)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      // Update active eagerly so the click registers instantly even before the observer fires
-      setActiveId(id)
-    }
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    setActiveId(id)
   }
 
   const renderItem = (id: string, label: string) => {
@@ -67,28 +63,29 @@ export function TableOfContents({ topId, topLabel, sections }: TableOfContentsPr
         <a
           href={`#${id}`}
           onClick={e => handleClick(e, id)}
-          className="toc-item text-copy-small"
-          data-active={isActive ? 'true' : 'false'}
+          className={isActive ? 'text-label-small' : 'text-copy-small'}
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 'var(--gap-large)',
+            gap: '8px',
             textDecoration: 'none',
             color: isActive ? 'var(--color-text-primary)' : 'var(--color-text-subtle)',
             transition: 'color 200ms ease',
             padding: '2px 0',
           }}
         >
+          {/* 2 px tall pill dash — matches Figma's border-based indicator */}
           <span
             aria-hidden="true"
             style={{
               display: 'block',
-              width: '12px',
-              height: '1px',
-              backgroundColor: isActive ? 'var(--color-text-primary)' : 'var(--color-text-subtle)',
-              opacity: isActive ? 1 : 0.5,
-              transition: 'background-color 200ms ease, opacity 200ms ease',
+              width: '16px',
+              height: '2px',
+              border: `1px solid ${isActive ? 'var(--color-text-subtle)' : 'var(--color-border)'}`,
+              borderRadius: '4px',
               flexShrink: 0,
+              transition: 'border-color 200ms ease',
+              boxSizing: 'border-box',
             }}
           />
           <span style={{ whiteSpace: 'nowrap' }}>{label}</span>
@@ -100,14 +97,22 @@ export function TableOfContents({ topId, topLabel, sections }: TableOfContentsPr
   return (
     <nav
       aria-label="Table of contents"
-      className="toc"
       style={{
-        position: 'sticky',
-        top: '160px',
-        alignSelf: 'flex-start',
+        position: 'fixed',
+        /* Keeps TOC left of the centred 580 px content column */
+        left: 'max(20px, calc(50vw - 584px))',
+        top: '120px',
+        width: '220px',
       }}
     >
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 'var(--gap-medium)' }}>
+      <ul style={{
+        listStyle: 'none',
+        padding: 0,
+        margin: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+      }}>
         {renderItem(topId, topLabel)}
         {sections.map(s => renderItem(s.id, s.caption ?? s.heading ?? s.id))}
       </ul>

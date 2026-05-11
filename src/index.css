@@ -83,17 +83,27 @@
 
 /* ── Typography system ── */
 .text-title-large {
-  font-family: 'Instrument Serif', 'Inter', system-ui, sans-serif;
-  font-size: 48px;
-  line-height: 64px;
-  letter-spacing: 0.72px;
-  font-weight: 400;
+  /* Inter Semi Bold 42 / -1.26 — project page H1 */
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 42px;
+  line-height: 52px;
+  letter-spacing: -1.26px;
+  font-weight: 600;
 }
 .text-title-medium {
-  font-family: 'Instrument Serif', 'Inter', system-ui, sans-serif;
-  font-size: 32px;
-  line-height: 40px;
-  letter-spacing: 0.48px;
+  /* Inter Medium 28 / -0.84 — section H2 */
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 28px;
+  line-height: 36px;
+  letter-spacing: -0.84px;
+  font-weight: 500;
+}
+.text-stats-medium {
+  /* DM Serif Display 28 / -0.84 — stat card values */
+  font-family: 'DM Serif Display', 'Inter', system-ui, sans-serif;
+  font-size: 28px;
+  line-height: 36px;
+  letter-spacing: -0.84px;
   font-weight: 400;
 }
 .text-copy-medium {
@@ -330,14 +340,11 @@
   transition: opacity 200ms ease;
 }
 
-/* ── Project-page TOC: hide on narrow viewports ── */
-@media (max-width: 1100px) {
-  .project-toc-col,
-  .project-right-col {
+/* ── Project-page TOC: hide when the left margin can't fit it ── */
+/* TOC left = calc(50vw - 584px). Becomes negative below ~1170 px. */
+@media (max-width: 1280px) {
+  nav[aria-label="Table of contents"] {
     display: none;
-  }
-  .project-layout {
-    grid-template-columns: minmax(0, 1fr) !important;
   }
 }
 
