@@ -108,6 +108,7 @@ export function TableOfContents({ topId, topLabel, sections }: TableOfContentsPr
         top: '50%',
         transform: 'translateY(-50%)',
         width: '220px',
+        zIndex: 40,
       }}
     >
       <ul style={{
